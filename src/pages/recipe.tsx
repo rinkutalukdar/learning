@@ -83,9 +83,10 @@ const RecipeTemplate: React.FC<RecipeTemplateProps> = ({ data }) => {
 };
 
 export const query = graphql`
-  query ($id: String!) {
-    recipe(id: { eq: $id }) {
+  query ($id: Int!) {
+    recipe(itemid: { eq: $id }) {
       id
+      itemid
       image
       title
       instructions
