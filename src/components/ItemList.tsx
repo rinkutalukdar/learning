@@ -20,17 +20,19 @@ const ItemList = () => {
 
   return (
     <div>
-      <h2>Item List</h2>
+      <h2>Add Something</h2>
       <input
         type="text"
         value={newItem}
         onChange={(e) => setNewItem(e.target.value)}
         placeholder="Add a new item"
+        className='w-full p-2 border rounded'
       />
-      <button onClick={addItem}>Add Item</button>
-      <ul>
+      <button onClick={addItem} className="px-4 py-2 bg-blue-600 text-white rounded">Add Item</button>
+      <ul role="list" class="divide-y divide-gray-100">
+        
         {items && items.map((item, index) => ( // Check if items is not undefined
-          <li key={index}>
+          <li className="flex justify-between gap-x-6 py-5" key={index}>
             {item} <button onClick={() => removeItem(index)}>Remove</button>
           </li>
         ))}
