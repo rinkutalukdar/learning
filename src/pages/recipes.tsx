@@ -1,47 +1,63 @@
-import React from "react";
-import { graphql, Link } from "gatsby";
+import React, { useState } from "react";
+import { graphql, useStaticQuery, Link } from "gatsby";
+import TabMenu from "../components/TabMenu";
 import Layout from "../components/Layout";
 
-const RecipesPage = ({ data }) => {
-  const recipes = data.allRecipe.nodes; // Adjust based on your data source
+const RecipesPage = () => {
+  const [category, setCategory] = useState("Indian");
+
+  // GraphQL query to get all recipes
+  const data = useStaticQuery(graphql`
+    query {
+      allRecipe {
+        nodes {
+          id
+          strMeal
+          strMealThumb
+          category
+        }
+      }
+    }
+  `);
+
+  // Filter recipes based on the selected category
+  const filteredRecipes = data.allRecipe.nodes.filter(
+    (recipe) => recipe.category === category
+  );
 
   return (
     <Layout>
-      <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-4">Indian Recipes</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recipes.map((recipe) => (
-            <div key={recipe.id} className="bg-white p-4 rounded shadow-md">
-              <Link
-                to={`/recipe/${recipe.id}`}
-                className="text-blue-500 hover:underline"
-              >
-                <img
-                  src={recipe.strMealThumb}
-                  alt={recipe.title}
-                  className="w-full h-48 object-cover rounded mb-4"
-                />
-                <h2 className="text-xl font-semibold mb-2">{recipe.strMeal}</h2>
-              </Link>
-            </div>
+      <div>
+        <h1>Recipes</h1>
+        <TabMenu onSelectCategory={setCategory} />
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {filteredRecipes.map((recipe) => (
+            <Link
+              to={`/recipe/${recipe.id}`} // Link to the detailed recipe page
+              key={recipe.id}
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                margin: "10px",
+                padding: "10px",
+                width: "200px",
+                display: "block",
+              }}
+            >
+              <img
+                src={recipe.strMealThumb}
+                alt={recipe.strMeal}
+                style={{ width: "100%", borderRadius: "5px" }}
+              />
+              <h3>{recipe.strMeal}</h3>
+            </Link>
           ))}
         </div>
       </div>
     </Layout>
   );
 };
-
-export const query = graphql`
-  query {
-    allRecipe {
-      nodes {
-        id
-        idMeal
-        strMeal
-        strMealThumb
-      }
-    }
-  }
-`;
 
 export default RecipesPage;

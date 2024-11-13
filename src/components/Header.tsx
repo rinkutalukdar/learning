@@ -23,7 +23,7 @@ const Header = () => {
         <nav className="hidden md:flex space-x-6">
           <Link to="/" className="hover:text-gray-400">Home</Link>
           <Link to="/redux" className="hover:text-gray-400">Redux</Link>
-          <Link to="/recipes" className="hover:text-gray-400">About</Link>
+          <Link to="/recipes" className="hover:text-gray-400">Recipes</Link>
           <Link to="/contact" className="hover:text-gray-400">Contact</Link>
         </nav>
 

@@ -8,37 +8,50 @@ require("dotenv").config({
 const API_KEY = process.env.RECIPE_API_KEY;
 const BASE_URL = process.env.RECIPE_BASE_URL;
 
-exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => {
+const fetch = require("node-fetch");
+
+exports.sourceNodes = async ({ actions, createContentDigest }) => {
   const { createNode } = actions;
+  // const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
+  const categories = ["Indian", "American", "Chinese", "Italian"];
 
-  try {
-    // Fetch data from Spoonacular API
-    const response = await axios.get(`${BASE_URL}/filter.php?a=Indian`);
-    const recipes = response.data.meals;
+  for (const category of categories) {
+    try {
+      // Fetch category-specific meals
+      const response = await fetch(`${BASE_URL}/filter.php?a=${category}`);
+      const data = await response.json();
 
-    // Create a Gatsby node for each recipe
-    for (const recipe of recipes) {
-      const detailedResponse = await axios.get(
-        `${BASE_URL}/lookup.php?i=${recipe.idMeal}`
-      );
-      
-      const detailedRecipe = detailedResponse.data.meals[0];
-      createNode({
-        id: createNodeId(`${detailedRecipe.idMeal}`),
-        parent: null,
-        children: [],
-        internal: {
-          type: "Recipe",
-          contentDigest: createContentDigest(detailedRecipe),
-        },
-        ...detailedRecipe,
-      });
-      
+      // Iterate through each meal and fetch detailed data
+      for (const meal of data.meals) {
+        try {
+          const detailedResponse = await fetch(
+            `${BASE_URL}/lookup.php?i=${meal.idMeal}`
+          );
+          const detailedData = await detailedResponse.json();
+          const detailedRecipe = detailedData.meals[0];
+          detailedRecipe.category = category; // Add category field
+
+          // Create a node for each detailed recipe
+          createNode({
+            ...detailedRecipe,
+            id: detailedRecipe.idMeal,
+            parent: null,
+            children: [],
+            internal: {
+              type: "Recipe",
+              contentDigest: createContentDigest(detailedRecipe),
+            },
+          });
+        } catch (detailError) {
+          console.error(`Error fetching detailed data for meal ${meal.idMeal}:`, detailError);
+        }
+      }
+    } catch (error) {
+      console.error(`Error fetching recipes for ${category}:`, error);
     }
-  } catch (error) {
-    console.error("Error fetching data from Spoonacular API:", error);
   }
 };
+
 
 // gatsby-node.js
 exports.createPages = async ({ graphql, actions }) => {
@@ -53,6 +66,7 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     }
   `);
+  // console.log(result)
 
   result.data.allRecipe.nodes.forEach((recipe) => {
     createPage({
