@@ -14,20 +14,23 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
 
   try {
     // Fetch data from Spoonacular API
-    const response = await axios.get(`${BASE_URL}/complexSearch?apiKey=${API_KEY}`);
-    const recipes = response.data.results;
+    const response = await axios.get(`${BASE_URL}/filter.php?a=Indian`);
+    const recipes = response.data.meals;
+
+    // console.log(response.data)
 
     // console.log(recipes);
     // Create a Gatsby node for each recipe
     for (const recipe of recipes) {
+      // console.log(recipe)
       const detailedResponse = await axios.get(
-        `${BASE_URL}/${recipe.id}/information?apiKey=${API_KEY}&includeNutrition=true`
+        `${BASE_URL}/lookup.php?i=${recipe.idMeal}`
       );
-      const detailedRecipe = detailedResponse.data;
-      detailedRecipe.itemid = detailedRecipe.id;
-      detailedRecipe.id = `recipe-${detailedRecipe.id}`;
+      
+      const detailedRecipe = detailedResponse.data.meals[0];
+      // console.log(detailedRecipe);
       createNode({
-        id: createNodeId(`recipe-${detailedRecipe.id}`),
+        id: createNodeId(`${detailedRecipe.idMeal}`),
         parent: null,
         children: [],
         internal: {
@@ -36,6 +39,7 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
         },
         ...detailedRecipe,
       });
+      
     }
   } catch (error) {
     console.error("Error fetching data from Spoonacular API:", error);
@@ -50,8 +54,7 @@ exports.createPages = async ({ graphql, actions }) => {
       allRecipe {
         nodes {
           id
-          itemid
-          title
+          idMeal
         }
       }
     }
@@ -59,13 +62,14 @@ exports.createPages = async ({ graphql, actions }) => {
   
 
   // Loop through each recipe and create a page
+  console.log(result)
   result.data.allRecipe.nodes.forEach((recipe) => {
     // console.log(recipe);
     createPage({
-      path: `/recipe/${recipe.id}`, // URL path for each recipe
+      path: `/recipe/${recipe.idMeal}`, // URL path for each recipe
       component: require.resolve("./src/pages/recipe.tsx"), // Path to the template
       context: {
-        id: recipe.itemid, // Pass the recipe ID as context
+        id: recipe.id, // Pass the recipe ID as context
       },
     });
   });

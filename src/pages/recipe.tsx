@@ -1,80 +1,72 @@
 import React from "react";
 import { graphql } from "gatsby";
-import Hero from "../components/Hero";
-import Layout from "../components/Layout";
-import { FaLeaf, FaClock, FaUtensils, FaExternalLinkAlt } from "react-icons/fa";
-
-import { Url } from "url";
+import Layout from "../components/Layout"
 
 interface RecipeTemplateProps {
   data: {
     recipe: {
-      title: string;
-      image: string;
-      instructions: string;
-      extendedIngredients: any;
-      preparationMinutes: any;
-      dishTypes: any;
-      sourceName: any;
-      sourceUrl: Url;
+      id: String;
+      strMealThumb: string;
+      strMeal: string;
+      strInstructions: string;
+      strSource: string;
+      sourceName: string;
+      // dishTypes: string[];
+      // preparationMinutes: number;
+      // extendedIngredients: Array<{
+      //   name: string;
+      // }>;
     };
   };
 }
 
-const RecipeTemplate: React.FC<RecipeTemplateProps> = ({ data }) => {
-  const { title, image, instructions, extendedIngredients, preparationMinutes, dishTypes, sourceName, sourceUrl } = data.recipe;
 
+const RecipeTemplate: React.FC<RecipeTemplateProps> = ({ data }) => {
+  const recipeData = data.recipe;
+
+  const extendedIngredients = [
+    recipeData.strIngredient1,
+    recipeData.strIngredient2,
+    recipeData.strIngredient3,
+    recipeData.strIngredient4,
+    recipeData.strIngredient5,
+    recipeData.strIngredient6,
+    recipeData.strIngredient7,
+    recipeData.strIngredient8,
+    recipeData.strIngredient9,
+    recipeData.strIngredient10
+  ];
+  const recipeSteps = recipeData.strInstructions.trim().split(/\d+\.\s/).filter(Boolean);
   return (
     <Layout>
-      <div className="p-6">
-        <Hero heroImage={image} heroTitle={title}/>
-        {/* Two-Column Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Main Column: Recipe Description & Instructions */}
-          <div className="md:col-span-2">
-            {/* Additional Details Section */}
-            <div className="flex flex-wrap items-center gap-4 my-8 text-center">
-              {preparationMinutes && (
-                <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 text-gray-700">
-                  <FaClock className="mr-2 text-blue-500" />
-                  <span className="font-medium">{preparationMinutes} mins</span>
-                </div>
-              )}
-              {dishTypes && dishTypes.length > 0 && (
-                <div className="flex items-center bg-gray-100 rounded-full px-4 py-2 text-gray-700">
-                  <FaUtensils className="mr-2 text-green-500" />
-                  <span className="font-medium">{dishTypes.join(", ")}</span>
-                </div>
-              )}
-              {sourceName && (
-                <a
-                  href={sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center bg-gray-100 rounded-full px-4 py-2 text-gray-700 hover:text-blue-600 transition"
-                >
-                  <FaExternalLinkAlt className="mr-2 text-red-500" />
-                  <span className="font-medium">{sourceName}</span>
-                </a>
-              )}
-            </div>
-            <h2 className="text-2xl font-bold mb-2">Description</h2>
-            <p className="mb-4">{instructions}</p>
-
-            <h2 className="text-2xl font-bold mb-2">Instructions</h2>
-            <p className="mb-4">{instructions}</p>
+      <div className="container mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">{recipeData.strMeal}</h1>
+        <div className="flex gap-6">
+          {/* Left Column: Image and Instructions */}
+          <div className="basis-4/5 space-y-4">
+            <img
+              src={recipeData.strMealThumb}
+              alt={recipeData.strMeal}
+              className="w-full h-64 object-cover rounded shadow"
+            />
+            <h2 className="text-2xl font-semibold">Instructions</h2>
+            {/* <p className="text-gray-800">{recipeData.strInstructions}</p> */}
+            <ul>
+              {recipeSteps.map((step, index) => (
+                <li key={index}>{index + 1}. {step}</li>
+              ))}
+            </ul>
           </div>
 
-          {/* Sidebar: Recipe Ingredients */}
-          <aside className="bg-gray-100 p-4">
-            <h2 className="text-2xl font-bold mb-2">Ingredients</h2>
-            <div className="list-disc pl-5">
-              {extendedIngredients.map((ingredient, index) => (
-                <div key={index} className="flex">
-                  <FaLeaf className="mr-2 text-green-500" /> <span className="font-medium">{ingredient.name}</span>
-                </div>
+          {/* Right Column: Ingredients */}
+          <aside className="basis-1/5 bg-gray-50 p-4 rounded shadow-md">
+            <h2 className="text-2xl font-semibold mb-4">Ingredients</h2>
+            <a href={recipeData.strSource}>{recipeData.strSource}</a>
+            <ul>
+              {extendedIngredients.map((ingredient) => (
+                <li key={ingredient.id}>{ingredient.name}</li>
               ))}
-            </div>
+            </ul>
           </aside>
         </div>
       </div>
@@ -83,21 +75,26 @@ const RecipeTemplate: React.FC<RecipeTemplateProps> = ({ data }) => {
 };
 
 export const query = graphql`
-  query ($id: Int!) {
-    recipe(itemid: { eq: $id }) {
+  query ($id: String!) {
+    recipe(id: { eq: $id }) {
       id
-      itemid
-      image
-      title
-      instructions
-      sourceUrl
-      sourceName
-      dishTypes
-      preparationMinutes
-      extendedIngredients {
-        id
-        name
-      }
+      idMeal
+      strMeal
+      strInstructions
+      strMealThumb
+      strSource
+      strIngredient1
+      strIngredient2
+      strIngredient3
+      strIngredient4
+      strIngredient5
+      strIngredient6
+      strIngredient7
+      strIngredient8
+      strIngredient9
+      strIngredient10
+      strYoutube
+
     }
   }
 `;
