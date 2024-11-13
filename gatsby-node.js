@@ -10,25 +10,19 @@ const BASE_URL = process.env.RECIPE_BASE_URL;
 
 exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => {
   const { createNode } = actions;
-  //console.log(API_KEY, BASE_URL);
 
   try {
     // Fetch data from Spoonacular API
     const response = await axios.get(`${BASE_URL}/filter.php?a=Indian`);
     const recipes = response.data.meals;
 
-    // console.log(response.data)
-
-    // console.log(recipes);
     // Create a Gatsby node for each recipe
     for (const recipe of recipes) {
-      // console.log(recipe)
       const detailedResponse = await axios.get(
         `${BASE_URL}/lookup.php?i=${recipe.idMeal}`
       );
       
       const detailedRecipe = detailedResponse.data.meals[0];
-      // console.log(detailedRecipe);
       createNode({
         id: createNodeId(`${detailedRecipe.idMeal}`),
         parent: null,
@@ -46,7 +40,7 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
   }
 };
 
-// Create pages for each recipe
+// gatsby-node.js
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions;
   const result = await graphql(`
@@ -59,17 +53,13 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     }
   `);
-  
 
-  // Loop through each recipe and create a page
-  console.log(result)
   result.data.allRecipe.nodes.forEach((recipe) => {
-    // console.log(recipe);
     createPage({
-      path: `/recipe/${recipe.idMeal}`, // URL path for each recipe
-      component: require.resolve("./src/pages/recipe.tsx"), // Path to the template
+      path: `/recipe/${recipe.id}`, // URL path for each recipe
+      component: require.resolve("./src/pages/recipe.tsx"), // Use the template in src/templates
       context: {
-        id: recipe.id, // Pass the recipe ID as context
+        id: String(recipe.id), // Pass the recipe ID as context
       },
     });
   });

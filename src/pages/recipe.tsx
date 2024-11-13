@@ -75,7 +75,7 @@ const RecipeTemplate: React.FC<RecipeTemplateProps> = ({ data }) => {
 };
 
 export const query = graphql`
-  query ($id: String!) {
+  query ($id: String) {
     recipe(id: { eq: $id }) {
       id
       idMeal
@@ -94,7 +94,6 @@ export const query = graphql`
       strIngredient9
       strIngredient10
       strYoutube
-
     }
   }
 `;

@@ -3,7 +3,6 @@ import { graphql, Link } from "gatsby";
 import Layout from "../components/Layout";
 
 const RecipesPage = ({ data }) => {
-  console.log(data)
   const recipes = data.allRecipe.nodes; // Adjust based on your data source
 
   return (
@@ -14,7 +13,7 @@ const RecipesPage = ({ data }) => {
           {recipes.map((recipe) => (
             <div key={recipe.id} className="bg-white p-4 rounded shadow-md">
               <Link
-                to={`/recipe/${recipe.idMeal}`}
+                to={`/recipe/${recipe.id}`}
                 className="text-blue-500 hover:underline"
               >
                 <img
