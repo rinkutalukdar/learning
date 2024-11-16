@@ -13,7 +13,7 @@ const fetch = require("node-fetch");
 exports.sourceNodes = async ({ actions, createContentDigest }) => {
   const { createNode } = actions;
   // const BASE_URL = "https://www.themealdb.com/api/json/v1/1";
-  const categories = ["Indian", "American", "Chinese", "Italian"];
+  const categories = ["Indian"];
 
   for (const category of categories) {
     try {

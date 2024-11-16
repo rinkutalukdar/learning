@@ -1,28 +1,43 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from "@reduxjs/toolkit";
 
-// Initial state
-const initialState = {
-  items: [] // Ensure items is initialized as an empty array
-};
+// Slice for items
+const itemsSlice = createSlice({
+  name: "items",
+  initialState: [],
+  reducers: {
+    addItem: (state, action) => {
+      state.push(action.payload); // Using immer under the hood
+    },
+    removeItem: (state, action) => {
+      return state.filter((_, index) => index !== action.payload);
+    },
+  },
+});
 
-// Reducer function
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'ADD_ITEM':
-      return { ...state, items: [...state.items, action.payload] };
-    case 'REMOVE_ITEM':
-      return {
-        ...state,
-        items: state.items.filter((item, index) => index !== action.payload)
-      };
-    default:
-      return state;
-  }
-};
+// Slice for bookmarks
+const bookmarksSlice = createSlice({
+  name: "bookmarks",
+  initialState: [],
+  reducers: {
+    addBookmark: (state, action) => {
+      state.push(action.payload); // Using immer under the hood
+    },
+    removeBookmark: (state, action) => {
+      return state.filter((bookmark) => bookmark.id !== action.payload.id);
+    },
+  },
+});
 
-// Create store using configureStore
+// Export actions
+export const { addItem, removeItem } = itemsSlice.actions;
+export const { addBookmark, removeBookmark } = bookmarksSlice.actions;
+
+// Create store
 const store = configureStore({
-  reducer
+  reducer: {
+    items: itemsSlice.reducer,
+    bookmarks: bookmarksSlice.reducer,
+  },
 });
 
 export default store;
