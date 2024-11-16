@@ -19,6 +19,8 @@ const RecipesPage: React.FC = () => {
   const dispatch = useDispatch();
   const bookmarks: Recipe[] = useSelector((state: any) => state.bookmarks);
 
+  console.log("node", process.env.NODE_BACKEND);
+
   // Fetch bookmarks from MongoDB on component mount
   useEffect(() => {
     const loadBookmarks = async () => {
