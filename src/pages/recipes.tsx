@@ -19,13 +19,13 @@ const RecipesPage: React.FC = () => {
   const dispatch = useDispatch();
   const bookmarks: Recipe[] = useSelector((state: any) => state.bookmarks);
 
-  console.log("node", process.env.NODE_BACKEND);
+  console.log("node", process.env.GATSBY_NODE_BACKEND);
 
   // Fetch bookmarks from MongoDB on component mount
   useEffect(() => {
     const loadBookmarks = async () => {
       try {
-        const response = await axios.get(`${process.env.NODE_BACKEND}/bookmarks`);
+        const response = await axios.get(`${process.env.GATSBY_NODE_BACKEND}/bookmarks`);
         const data: Recipe[] = response.data;
         data.forEach((bookmark) => {
           dispatch(addBookmarkAction(bookmark));
@@ -68,7 +68,7 @@ const RecipesPage: React.FC = () => {
   
       // Use the correct environment variable
       const response = await axios.post(
-        `${process.env.NODE_BACKEND}/bookmarks`,
+        `${process.env.GATSBY_NODE_BACKEND}/bookmarks`,
         recipe,
         {
           headers: {
@@ -88,7 +88,7 @@ const RecipesPage: React.FC = () => {
   // Handler for removing a bookmark
   const handleRemoveBookmark = async (recipe: Recipe) => {
     try {
-      await axios.delete(`${process.env.NODE_BACKEND}/bookmarks/${recipe.id}`);
+      await axios.delete(`${process.env.GATSBY_NODE_BACKEND}/bookmarks/${recipe.id}`);
       dispatch(removeBookmarkAction(recipe));
     } catch (error) {
       console.error("Error removing bookmark:", error);
