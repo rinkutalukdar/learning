@@ -29,7 +29,7 @@ const ItemList = () => {
         className='w-full p-2 border rounded'
       />
       <button onClick={addItem} className="px-4 py-2 bg-blue-600 text-white rounded">Add Item</button>
-      <ul role="list" class="divide-y divide-gray-100">
+      <ul role="list" className="divide-y divide-gray-100">
         
         {items && items.map((item, index) => ( // Check if items is not undefined
           <li className="flex justify-between gap-x-6 py-5" key={index}>

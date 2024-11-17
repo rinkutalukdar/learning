@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { Link } from 'gatsby';
+import AuthButtons from "../components/AuthButtons";
+import { useAuth0 } from "@auth0/auth0-react";
+// import  Profile from "../components/Profile"
 
 const Header = () => {
+
+  const { user, isAuthenticated } = useAuth0(); 
+  
   const [isOpen, setIsOpen] = useState(false);
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <header className="bg-gray-500 text-gray-100">
+    <header className="bg-headerBg text-gray-100">
       <div className="container mx-auto px-4 flex justify-between items-center py-4">
         
         {/* Logo or Site Name */}
@@ -21,10 +28,11 @@ const Header = () => {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden md:flex space-x-6">
-          <Link to="/" className="hover:text-gray-400">Home</Link>
-          <Link to="/redux" className="hover:text-gray-400">Redux</Link>
-          <Link to="/recipes" className="hover:text-gray-400">Recipes</Link>
-          <Link to="/contact" className="hover:text-gray-400">Contact</Link>
+          <Link to="/" className="text-linkColor hover:text-gray-400 mt-2">Home</Link>
+          <Link to="/redux" className="text-linkColor hover:text-gray-400 mt-2">Redux</Link>
+          <Link to="/recipes" className="text-linkColor hover:text-gray-400 mt-2">Recipes</Link>
+          <Link to="/contact" className="text-linkColor hover:text-gray-400 mt-2">Contact</Link>
+          <AuthButtons />
         </nav>
 
         {/* Mobile Menu Toggle */}

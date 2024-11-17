@@ -1,74 +1,73 @@
 import React from "react";
 import { graphql } from "gatsby";
-import Layout from "../components/Layout"
+import Layout from "../components/Layout";
+import RecipeDetail from "../components/RecipeDetail";
 
+// Define the types for the props
 interface RecipeTemplateProps {
   data: {
     recipe: {
-      id: String;
+      id: string;
       strMealThumb: string;
       strMeal: string;
       strInstructions: string;
       strSource: string;
-      sourceName: string;
-      // dishTypes: string[];
-      // preparationMinutes: number;
-      // extendedIngredients: Array<{
-      //   name: string;
-      // }>;
+      views?: number;
+      strIngredient1?: string;
+      strIngredient2?: string;
+      strIngredient3?: string;
+      strIngredient4?: string;
+      strIngredient5?: string;
+      strIngredient6?: string;
+      strIngredient7?: string;
+      strIngredient8?: string;
+      strIngredient9?: string;
+      strIngredient10?: string;
     };
   };
+  isAuthenticated: boolean;
+  isBookmarked: (id: string) => boolean;
+  handleAddBookmark: (recipe: any) => void;
+  handleRemoveBookmark: (recipe: any) => void;
 }
 
+const RecipeTemplate: React.FC<RecipeTemplateProps> = ({
+  data,
+  isAuthenticated,
+  isBookmarked,
+  handleAddBookmark,
+  handleRemoveBookmark,
+}) => {
+  const {
+    id,
+    strMealThumb,
+    strMeal,
+    strInstructions,
+    strSource,
+    ...ingredients
+  } = data.recipe;
 
-const RecipeTemplate: React.FC<RecipeTemplateProps> = ({ data }) => {
-  const recipeData = data.recipe;
-
-  const extendedIngredients = [
-    recipeData.strIngredient1,
-    recipeData.strIngredient2,
-    recipeData.strIngredient3,
-    recipeData.strIngredient4,
-    recipeData.strIngredient5,
-    recipeData.strIngredient6,
-    recipeData.strIngredient7,
-    recipeData.strIngredient8,
-    recipeData.strIngredient9,
-    recipeData.strIngredient10
-  ];
-  const recipeSteps = recipeData.strInstructions.trim().split(/\d+\.\s/).filter(Boolean);
+  // Filter out empty or undefined ingredients
+  const extendedIngredients = Object.values(ingredients).filter(Boolean);
+  let views = 0;
   return (
     <Layout>
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">{recipeData.strMeal}</h1>
-        <div className="flex gap-6">
-          {/* Left Column: Image and Instructions */}
-          <div className="basis-4/5 space-y-4">
-            <img
-              src={recipeData.strMealThumb}
-              alt={recipeData.strMeal}
-              className="w-full h-64 object-cover rounded shadow"
-            />
-            <h2 className="text-2xl font-semibold">Instructions</h2>
-            {/* <p className="text-gray-800">{recipeData.strInstructions}</p> */}
-            <ul>
-              {recipeSteps.map((step, index) => (
-                <li key={index}>{index + 1}. {step}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Right Column: Ingredients */}
-          <aside className="basis-1/5 bg-gray-50 p-4 rounded shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Ingredients</h2>
-            <a href={recipeData.strSource}>{recipeData.strSource}</a>
-            <ul>
-              {extendedIngredients.map((ingredient) => (
-                <li key={ingredient.id}>{ingredient.name}</li>
-              ))}
-            </ul>
-          </aside>
-        </div>
+        <h1 className="text-3xl font-bold mb-6">{strMeal}</h1>
+        <RecipeDetail
+          id={id}
+          strMealThumb={strMealThumb}
+          strMeal={strMeal}
+          strInstructions={strInstructions}
+          extendedIngredients={extendedIngredients}
+          strSource={strSource}
+          views={views}
+          isAuthenticated={isAuthenticated}
+          isBookmarked={isBookmarked}
+          handleAddBookmark={handleAddBookmark}
+          handleRemoveBookmark={handleRemoveBookmark}
+          recipe={data.recipe}
+        />
       </div>
     </Layout>
   );
@@ -78,7 +77,6 @@ export const query = graphql`
   query ($id: String) {
     recipe(id: { eq: $id }) {
       id
-      idMeal
       strMeal
       strInstructions
       strMealThumb
@@ -93,7 +91,6 @@ export const query = graphql`
       strIngredient8
       strIngredient9
       strIngredient10
-      strYoutube
     }
   }
 `;

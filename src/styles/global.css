@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  @apply bg-contentBg; /* Use Tailwind's @apply to add a custom class */
+}
+
+@layer utilities {
+  .masonry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px; /* Adjust the gap size as needed */
+  }
+
+  .masonry-item {
+    break-inside: avoid; /* Prevent items from breaking in the middle */
+  }
+}

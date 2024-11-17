@@ -54,33 +54,35 @@ const Home = ({ data }) => {
 
   return (
     <Layout>
-      <h1 className="text-3xl font-bold">{frontmatter.title}</h1>
-      <p className="text-gray-600 mb-6">{frontmatter.date}</p>
+      <div className="container mx-auto p-6">
+        <h1 className="text-3xl font-bold">{frontmatter.title}</h1>
+        <p className="text-gray-600 mb-6">{frontmatter.date}</p>
 
-      {/* Render the current chapter and its items */}
-      <h2 className="text-2xl font-semibold mb-4">
-        {chapters[currentIndex]}
-      </h2>
-      <TutorialList items={result[currentIndex][chapters[currentIndex]]} />
+        {/* Render the current chapter and its items */}
+        <h2 className="text-2xl font-semibold mb-4">
+          {chapters[currentIndex]}
+        </h2>
+        <TutorialList items={result[currentIndex][chapters[currentIndex]]} />
 
-      {/* Navigation Buttons */}
-      <div className="flex justify-between mt-6">
-        {prevChapter && (
-          <button
-            onClick={prevChapter}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            ← Previous
-          </button>
-        )}
-        {nextChapter && (
-          <button
-            onClick={nextChapter}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Next →
-          </button>
-        )}
+        {/* Navigation Buttons */}
+        <div className="flex justify-between mt-6">
+          {prevChapter && (
+            <button
+              onClick={prevChapter}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              ← Previous
+            </button>
+          )}
+          {nextChapter && (
+            <button
+              onClick={nextChapter}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Next →
+            </button>
+          )}
+        </div>
       </div>
     </Layout>
   );
