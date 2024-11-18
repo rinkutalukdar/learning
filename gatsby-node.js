@@ -94,7 +94,7 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
     allArticles.forEach((article, index) => {
       createNode({
         ...article,
-        id: createNodeId(`news-article-${index}`),
+        id: `news-article-${index}`,
         parent: null,
         children: [],
         internal: {
@@ -139,28 +139,28 @@ exports.createPages = async ({ graphql, actions }) => {
   }
 
   // --- Create Pages for News Articles ---
-  try {
-    const newsResult = await graphql(`
-      query {
-        allNewsArticle {
-          nodes {
-            id
-            title
-          }
-        }
-      }
-    `);
+  // try {
+  //   const newsResult = await graphql(`
+  //     query {
+  //       allNewsArticle {
+  //         nodes {
+  //           id
+  //           title
+  //         }
+  //       }
+  //     }
+  //   `);
 
-    newsResult.data.allNewsArticle.nodes.forEach((article) => {
-      createPage({
-        path: `/news/${article.id}`, // URL path for each news article
-        component: path.resolve('./src/pages/news.tsx'), // Template for news page
-        context: {
-          id: article.id, // Pass the article ID as context
-        },
-      });
-    });
-  } catch (error) {
-    console.error('Error creating news pages:', error);
-  }
+  //   newsResult.data.allNewsArticle.nodes.forEach((article) => {
+  //     createPage({
+  //       path: `/news/${article.id}`, // URL path for each news article
+  //       component: path.resolve('./src/pages/news.tsx'), // Template for news page
+  //       context: {
+  //         id: article.id, // Pass the article ID as context
+  //       },
+  //     });
+  //   });
+  // } catch (error) {
+  //   console.error('Error creating news pages:', error);
+  // }
 };

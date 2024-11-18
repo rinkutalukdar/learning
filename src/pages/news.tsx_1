@@ -17,15 +17,16 @@ const NewsPage = ({ data }) => {
   );
 };
 
-export const query = graphql`
-  query($id: String!) {
-    newsArticle(id: { eq: $id }) {
-      title
-      description
-      content
-      url
-    }
-  }
-`;
+// export const query = graphql`
+//   query($id: String!) {
+//     newsArticle(id: { eq: $id }) {
+//       id
+//       title
+//       description
+//       content
+//       url
+//     }s
+//   }
+// `;
 
 export default NewsPage;

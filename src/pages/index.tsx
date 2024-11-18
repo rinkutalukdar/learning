@@ -84,7 +84,7 @@ const IndexPage = ({ data }) => {
               >
                 <NewsTile
                   title={item.title}
-                  content={item.content}
+                  content={item.description}
                   urlToImage={item.urlToImage}
                   publishedAt={item.publishedAt}
                   source={item.source}
@@ -109,6 +109,7 @@ export const pageQuery = graphql`
         content
         publishedAt
         urlToImage
+        description
         url
         source {
           name
