@@ -17,3 +17,13 @@ body {
     break-inside: avoid; /* Prevent items from breaking in the middle */
   }
 }
+
+.vertical-timeline-element-content{
+  padding: 0;
+}
+
+.vertical-timeline--two-columns .vertical-timeline-element-icon {
+  width: 30px;  /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  font-size: 16px; /* Adjust the font size if the icon uses text */
+}

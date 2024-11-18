@@ -1,108 +1,119 @@
-import * as React from "react";
-import { graphql, Link } from "gatsby";
-import Layout from "../components/Layout";
-import TutorialList from "../components/TutorialsList";
+// src/pages/index.js
+import React, { useState } from 'react';
+import { graphql } from 'gatsby';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import Layout from '../components/Layout';
+import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
+import 'react-vertical-timeline-component/style.min.css';
+import { FaNewspaper } from 'react-icons/fa';
+import NewsTile from '../components/NewsTile';
+import { format } from 'date-fns';
+import { FaExternalLinkAlt, FaLightbulb } from 'react-icons/fa'; // Icon for "Read More"
 
-const Home = ({ data }) => {
-  const markdown = data.allMarkdownRemark.nodes.find(
-    (node) => node.frontmatter.fileId === "gatsby_learning"
-  );
+const IndexPage = ({ data }) => {
+  const initialItems = data.allNewsArticle.nodes;
+  const [items, setItems] = useState(initialItems);
+  const [skip, setSkip] = useState(initialItems.length);
+  const [hasMore, setHasMore] = useState(true);
+  const itemsPerPage = 10; // Number of items to load per request
 
-  if (!markdown) {
-    return <p>No items found.</p>;
-  }
+  // Function to load more items
+  const loadMoreItems = async () => {
+    try {
+      // Fetch more items using Gatsby's GraphQL API endpoint
+      const response = await fetch('/___graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `
+            query($skip: Int!, $limit: Int!) {
+              allNewsArticle(sort: { publishedAt: DESC }, skip: $skip, limit: $limit) {
+                nodes {
+                  title
+                  content
+                  publishedAt
+                  urlToImage
+                  url
+                  source {
+                    name
+                  }
+                }
+              }
+            }
+          `,
+          variables: { skip, limit: itemsPerPage },
+        }),
+      });
 
-  const { frontmatter, html } = markdown;
+      const result = await response.json();
+      const newItems = result.data.allNewsArticle.nodes;
 
-  // Parse HTML to extract chapters and items
-  const chapterRegex = /<h2>(.*?)<\/h2>/g;
-  const itemRegex = /<h3>(.*?)<\/h3>\s*<p>(.*?)<\/p>/g;
-
-  let match;
-  const chapters = [];
-  const result = [];
-
-  // Extract and store chapters
-  while ((match = chapterRegex.exec(html)) !== null) {
-    chapters.push(match[1]);
-  }
-
-  // Extract items and group them under their respective chapters
-  let currentChapterIndex = -1;
-  html.replace(
-    /<h2>(.*?)<\/h2>|<h3>(.*?)<\/h3>\s*<p>(.*?)<\/p>/g,
-    (match, chapter, title, description) => {
-      if (chapter) {
-        currentChapterIndex++;
-        result.push({ [chapter]: [] });
-      } else if (title && description) {
-        result[currentChapterIndex][chapters[currentChapterIndex]].push({
-          title,
-          description,
-        });
+      if (newItems.length === 0) {
+        setHasMore(false); // No more items to load
+      } else {
+        setItems((prevItems) => [...prevItems, ...newItems]);
+        setSkip(skip + itemsPerPage);
       }
+    } catch (error) {
+      console.error('Error loading more items:', error);
     }
-  );
+  };
 
-  // Navigation Logic
-  const [currentIndex, setCurrentIndex] = React.useState(0);
-  const isFirst = currentIndex === 0;
-  const isLast = currentIndex === chapters.length - 1;
-
-  const prevChapter = !isFirst ? () => setCurrentIndex(currentIndex - 1) : null;
-  const nextChapter = !isLast ? () => setCurrentIndex(currentIndex + 1) : null;
+  // const formattedDate = format(new Date(item.publishedAt), 'MMM d, yyyy'); // Example: "Nov 18, 2024"
 
   return (
     <Layout>
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold">{frontmatter.title}</h1>
-        <p className="text-gray-600 mb-6">{frontmatter.date}</p>
-
-        {/* Render the current chapter and its items */}
-        <h2 className="text-2xl font-semibold mb-4">
-          {chapters[currentIndex]}
-        </h2>
-        <TutorialList items={result[currentIndex][chapters[currentIndex]]} />
-
-        {/* Navigation Buttons */}
-        <div className="flex justify-between mt-6">
-          {prevChapter && (
-            <button
-              onClick={prevChapter}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              ← Previous
-            </button>
-          )}
-          {nextChapter && (
-            <button
-              onClick={nextChapter}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Next →
-            </button>
-          )}
-        </div>
+      <h1 className="text-3xl font-bold mb-6 text-center">News Timeline</h1>
+        <InfiniteScroll
+          dataLength={items.length}
+          next={loadMoreItems}
+          hasMore={hasMore}
+          loader={<p className="text-center mt-4">Loading more items...</p>}
+        >
+          <VerticalTimeline>
+            {items.map((item, index) => (
+              <VerticalTimelineElement
+                key={index}
+                date={format(new Date(item.publishedAt), 'MMM d, yyyy')}
+                icon={<FaLightbulb style={{ fontSize: '24px' }} />}
+                iconStyle={{ background: '#3498db', color: '#fff' }}
+                contentStyle={{ padding: 0 }}
+                contentArrowStyle={{ borderRight: '10px solid rgb(228 226 221)' }}
+                iconStyle={{ padding:1, background: 'rgb(33, 150, 243)', color: '#fff' }}
+              >
+                <NewsTile
+                  title={item.title}
+                  content={item.content}
+                  urlToImage={item.urlToImage}
+                  publishedAt={item.publishedAt}
+                  source={item.source}
+                  url={item.url}
+                />
+              </VerticalTimelineElement>
+            ))}
+          </VerticalTimeline>
+        </InfiniteScroll>
       </div>
     </Layout>
   );
 };
 
-export default Home;
+export default IndexPage;
 
-export const query = graphql`
+export const pageQuery = graphql`
   query {
-    allMarkdownRemark {
+    allNewsArticle(sort: { publishedAt: DESC }, limit: 10) {
       nodes {
-        frontmatter {
-          title
-          date
-          fileId
+        title
+        content
+        publishedAt
+        urlToImage
+        url
+        source {
+          name
         }
-        html
       }
     }
   }
 `;
-
-export const Head = () => <title>Home Page</title>;

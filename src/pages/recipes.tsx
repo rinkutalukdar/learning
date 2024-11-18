@@ -6,6 +6,7 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import TabMenu from "../components/TabMenu";
 import RecipeCard from "../components/RecipeCard";
+import { RootState } from "../store";
 import {
   addBookmark as addBookmarkAction,
   removeBookmark as removeBookmarkAction,

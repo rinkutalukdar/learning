@@ -1,8 +1,29 @@
-import React from "react";
+import React, {useEffect} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
 import { HiBookmark, HiOutlineBookmark, HiShare } from "react-icons/hi";
 import { FaEye } from "react-icons/fa";
+import { incrementView } from "../store/viewsSlice";
+
+// Props for the RecipeCard
+interface RecipeCardProps {
+  id: string;
+  strMeal: string;
+  strMealThumb: string;
+}
 
 const RecipeCard = ({ recipe, isAuthenticated, isBookmarked, handleAddBookmark, handleRemoveBookmark }) => {
+  const dispatch = useDispatch();
+  const viewCount = useSelector((state: RootState) =>
+    state.views.views.find((view) => view.recipeID === recipe.id)?.count || 0
+  );
+
+   // Increment the view count when the component mounts
+  useEffect(() => {
+    dispatch(incrementView(recipe.id));
+  }, [dispatch, recipe.id]);
+
+
   return (
     <div
       key={recipe.id}
@@ -46,7 +67,7 @@ const RecipeCard = ({ recipe, isAuthenticated, isBookmarked, handleAddBookmark, 
         {/* Views Icon and Number of Views */}
         <div className="flex items-center text-gray-600">
           <FaEye className="text-xl mr-1" />
-          <span>{recipe.views || 0}</span> {/* Display number of views */}
+          <span>{viewCount || 0}</span> {/* Display number of views */}
         </div>
       </div>
     </div>

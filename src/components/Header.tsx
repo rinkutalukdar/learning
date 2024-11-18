@@ -30,6 +30,7 @@ const Header = () => {
         <nav className="hidden md:flex space-x-6">
           <Link to="/" className="text-linkColor hover:text-gray-400 mt-2">Home</Link>
           <Link to="/redux" className="text-linkColor hover:text-gray-400 mt-2">Redux</Link>
+          <Link to="/gatsby" className="text-linkColor hover:text-gray-400 mt-2">Gatsby</Link>
           <Link to="/recipes" className="text-linkColor hover:text-gray-400 mt-2">Recipes</Link>
           <Link to="/contact" className="text-linkColor hover:text-gray-400 mt-2">Contact</Link>
           <AuthButtons />

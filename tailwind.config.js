@@ -11,7 +11,8 @@ module.exports = {
         footerBg: "#e4e2dd",
         linkColor: "#db4a2b",
         textColor: "#333333",
-        contentBg: "#f5f5f5", // or "#ffffff" for a cleaner look
+        contentBg: "#f5f5f5", 
+        borderColor: "#e4e2dd" // or "#ffffff" for a cleaner look
       },
     },
   },
