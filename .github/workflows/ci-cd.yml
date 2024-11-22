@@ -22,11 +22,11 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       # Step 4: Build the Gatsby site
       - name: Build Gatsby
-        run: npm run build
+        run: gatsby build
 
   deploy:
     needs: build
