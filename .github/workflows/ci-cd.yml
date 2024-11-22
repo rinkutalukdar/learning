@@ -26,7 +26,7 @@ jobs:
 
       # Step 4: Build the Gatsby site
       - name: Build Gatsby
-        run: gatsby build
+        run: yarn run build
 
   deploy:
     needs: build
