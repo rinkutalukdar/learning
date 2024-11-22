@@ -1,8 +1,6 @@
 import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { HiBookmark, HiOutlineBookmark, HiShare } from "react-icons/hi";
-import { FaEye } from "react-icons/fa";
 import { incrementView } from "../store/viewsSlice";
 
 // Props for the RecipeCard
@@ -43,30 +41,38 @@ const RecipeCard = ({ recipe, isAuthenticated, isBookmarked, handleAddBookmark, 
       <div className="flex items-center justify-between mt-4">
         {/* Bookmark Icon */}
         {isAuthenticated ? (
-          isBookmarked(recipe.id) ? (
-            <HiBookmark
+          isBookmarked(id) ? (
+            <span
               onClick={() => handleRemoveBookmark(recipe)}
               className="text-green-500 text-2xl cursor-pointer hover:text-green-600"
-            />
+            >Bookmarked
+            </span>
           ) : (
-            <HiOutlineBookmark
+            <span
               onClick={() => handleAddBookmark(recipe)}
               className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
-            />
+            >
+            Bookmark
+            </span>
           )
         ) : (
-          <HiOutlineBookmark className="text-gray-300 text-2xl" />
+          <span
+            className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
+          >
+            Bookmark
+          </span>
         )}
 
+
         {/* Share Icon */}
-        <HiShare
+        <span
           className="text-blue-500 text-2xl cursor-pointer hover:text-blue-600"
           onClick={() => alert("Share functionality here")}
-        />
+        >Share</span>
 
         {/* Views Icon and Number of Views */}
         <div className="flex items-center text-gray-600">
-          <FaEye className="text-xl mr-1" />
+          VIEW
           <span>{viewCount || 0}</span> {/* Display number of views */}
         </div>
       </div>

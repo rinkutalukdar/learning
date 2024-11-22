@@ -1,6 +1,4 @@
 import React from "react";
-import { HiBookmark, HiOutlineBookmark, HiShare } from "react-icons/hi";
-import { FaEye } from "react-icons/fa";
 
 interface ActionBarProps {
   id: string;
@@ -26,29 +24,37 @@ const ActionBar: React.FC<ActionBarProps> = ({
       {/* Bookmark Icon */}
       {isAuthenticated ? (
         isBookmarked(id) ? (
-          <HiBookmark
+          <span
             onClick={() => handleRemoveBookmark(recipe)}
             className="text-green-500 text-2xl cursor-pointer hover:text-green-600"
-          />
+          >Bookmarked
+          </span>
         ) : (
-          <HiOutlineBookmark
+          <span
             onClick={() => handleAddBookmark(recipe)}
             className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
-          />
+          >
+           Bookmark
+          </span>
         )
       ) : (
-        <HiOutlineBookmark className="text-gray-300 text-2xl" />
+        <span
+          className="text-gray-500 text-2xl cursor-pointer hover:text-gray-700"
+        >
+          Bookmark
+        </span>
       )}
 
       {/* Share Icon */}
-      <HiShare
+      <span
         className="text-blue-500 text-2xl cursor-pointer hover:text-blue-600"
         onClick={() => alert("Share functionality here")}
-      />
+      >Share
+      </span>
 
       {/* Views Icon and Number of Views */}
       <div className="flex items-center text-gray-600">
-        <FaEye className="text-xl mr-1" />
+        <span className="text-xl mr-1" >Views</span>
         <span>{views}</span>
       </div>
     </div>

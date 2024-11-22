@@ -3,10 +3,7 @@ name: Gatsby CI/CD Pipeline
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # Trigger on pushes to the main branch
 
 jobs:
   build:
@@ -46,4 +43,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./public  # The directory containing the built Gatsby site
+          # If you want to deploy from the main branch, use the `main` branch directly.
+          # This step will push the public directory to the GitHub Pages.
+

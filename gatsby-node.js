@@ -63,35 +63,19 @@ exports.sourceNodes = async ({ actions, createNodeId, createContentDigest }) => 
 
   // --- News Fetching Logic ---
   try {
-    // Initial request to get total number of results
-    const initialResponse = await axios.get(NEWS_API_URL, {
+    // Fetch data from your News API
+    const response = await axios.get(NEWS_API_URL, {
       params: {
-        apiKey: NEWS_API_KEY,
-        pageSize: pageSize,
-        page: page,
+        apiKey: NEWS_API_KEY, // Pass the API key as a parameter
+        pageSize: 100,
+        page: 1,
       },
     });
 
-    totalResults = initialResponse.data.totalResults;
-    allArticles = initialResponse.data.articles;
+    const newsArticles = response.data.articles; // Adjust this to match your API's response structure
 
-    // Calculate the number of pages needed
-    const totalPages = Math.ceil(totalResults / pageSize);
-
-    // Fetch remaining pages if there are more articles
-    for (page = 2; page <= totalPages; page++) {
-      const response = await axios.get(API_URL, {
-        params: {
-          apiKey: API_KEY,
-          pageSize: pageSize,
-          page: page,
-        },
-      });
-      allArticles = allArticles.concat(response.data.articles);
-    }
-
-    // Create nodes for all articles
-    allArticles.forEach((article, index) => {
+    // Create a node for each article
+    newsArticles.forEach((article, index) => {
       createNode({
         ...article,
         id: `news-article-${index}`,
